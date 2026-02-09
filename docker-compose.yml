@@ -1,0 +1,25 @@
+services:
+  # Cerebro y Músculo: Kedro + Spark
+  kedro-spark:
+    image: jupyter/pyspark-notebook:latest
+    container_name: lomar_spark_env
+    ports:
+      - "8888:8888" # Jupyter Notebook
+      - "4040:4040" # Spark UI
+    volumes:
+      - .:/home/jovyan/work
+    environment:
+      - SPARK_MASTER=local[*]
+
+  # Jefe de Orquesta: Airflow
+  airflow:
+    image: apache/airflow:2.7.1-python3.10
+    container_name: lomar_airflow_env
+    user: "${AIRFLOW_UID:-1000}:0"
+    command: standalone
+    ports:
+      - "8080:8080" # Airflow Web UI
+    volumes:
+      - .:/opt/airflow
+    environment:
+      - AIRFLOW_CORE_LOAD_EXAMPLES=False
