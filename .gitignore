@@ -168,3 +168,5 @@ logs/
 airflow-webserver.pid
 webserver_config.py
 *.db
+*.jar
+.secrets.sh

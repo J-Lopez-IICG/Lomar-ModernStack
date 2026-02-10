@@ -1,0 +1,4 @@
+# Usamos rutas completas para que no haya duda
+spark.jars: "/home/javier/proyectos/Lomar-ModernStack/mssql-jdbc-12.8.1.jre11.jar"
+spark.driver.extraClassPath: "/home/javier/proyectos/Lomar-ModernStack/mssql-jdbc-12.8.1.jre11.jar"
+spark.executor.extraClassPath: "/home/javier/proyectos/Lomar-ModernStack/mssql-jdbc-12.8.1.jre11.jar"
