@@ -1,20 +1,19 @@
-produccion_actual:
+# --- ENTRADA (SQL Server) ---
+sql_produccion_actual:
   type: spark.SparkDataset
-  filepath: "/home/javier/proyectos/Lomar-ModernStack/"
+  filepath: "/tmp/dummy_ingest" # Spark ignora esto en JDBC
   file_format: jdbc
   load_args:
     url: "jdbc:sqlserver://54.82.95.244:1433;databaseName=primar;encrypt=true;trustServerCertificate=true;"
-    dbtable: "dbo.produccion_actual"
+    dbtable: "dbo.produccion_actual"  # <--- AQUÍ ESPECIFICAS LA TABLA
     driver: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
-    
-    # --- CAMBIO AQUÍ: Usamos 'env' en lugar de 'oc.env' ---
     user: "${env:SQL_USER}"
-    password: "${env:SQL_PASSWORD}" 
-    # -----------------------------------------------------
+    password: "${env:SQL_PASSWORD}"
 
-produccion_procesada:
+# --- SALIDA (Data Lake - Bronce) ---
+raw_produccion_actual:
   type: spark.SparkDataset
-  filepath: data/02_intermediate/produccion_procesada.parquet
+  filepath: data/01_raw/produccion_actual.parquet
   file_format: parquet
   save_args:
     mode: "overwrite"

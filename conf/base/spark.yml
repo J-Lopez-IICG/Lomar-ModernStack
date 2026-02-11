@@ -1,4 +1,19 @@
-# Usamos rutas completas para que no haya duda
-spark.jars: "/home/javier/proyectos/Lomar-ModernStack/mssql-jdbc-12.8.1.jre11.jar"
-spark.driver.extraClassPath: "/home/javier/proyectos/Lomar-ModernStack/mssql-jdbc-12.8.1.jre11.jar"
-spark.executor.extraClassPath: "/home/javier/proyectos/Lomar-ModernStack/mssql-jdbc-12.8.1.jre11.jar"
+# Nombre de la aplicación en los logs
+spark.app.name: "Lomar_ModernStack"
+
+# --- RECURSOS (Lo que preguntabas) ---
+# Memoria para el "Driver" (tu script de Python). 
+# En local, 4GB o 8GB está bien. En Prod, esto se sube.
+spark.driver.memory: "4g"
+
+# --- OPTIMIZACIÓN LOCAL ---
+# Por defecto Spark crea 200 particiones para mezclar datos. 
+# Para tus datos de truchas (16k filas) es excesivo y lento.
+# Bajarlo a 4 u 8 hace que vuele en local.
+spark.sql.shuffle.partitions: 8
+
+# Zona horaria (Importante para no tener líos con fechas de SQL Server)
+spark.sql.session.timeZone: "UTC"
+
+# Modo maestro (Para local se usa 'local[*]' que significa "usa todos mis núcleos")
+spark.master: "local[*]"
