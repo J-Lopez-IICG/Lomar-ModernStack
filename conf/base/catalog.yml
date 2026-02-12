@@ -1,19 +1,73 @@
-# --- ENTRADA (SQL Server) ---
-sql_produccion_actual:
+# ====================================================
+# 1. PRIMAR (Tu entrada original)
+# ====================================================
+sql_primar_produccion:
   type: spark.SparkDataset
-  filepath: "/tmp/dummy_ingest" # Spark ignora esto en JDBC
+  filepath: "/tmp/dummy_primar"
   file_format: jdbc
   load_args:
+    # Fíjate en databaseName=primar
     url: "jdbc:sqlserver://54.82.95.244:1433;databaseName=primar;encrypt=true;trustServerCertificate=true;"
-    dbtable: "dbo.produccion_actual"  # <--- AQUÍ ESPECIFICAS LA TABLA
+    dbtable: "dbo.produccion_actual"
     driver: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
     user: "${env:SQL_USER}"
     password: "${env:SQL_PASSWORD}"
 
-# --- SALIDA (Data Lake - Bronce) ---
-raw_produccion_actual:
+raw_primar_produccion:
   type: spark.SparkDataset
-  filepath: data/01_raw/produccion_actual.parquet
+  filepath: data/01_raw/primar_produccion.parquet
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+
+# ====================================================
+# 2. PDA (Segunda Base de Datos)
+# ====================================================
+sql_pda_produccion:
+  type: spark.SparkDataset
+  filepath: "/tmp/dummy_pda"
+  file_format: jdbc
+  load_args:
+    # CAMBIO AQUÍ: databaseName=pda
+    url: "jdbc:sqlserver://54.82.95.244:1433;databaseName=pda;encrypt=true;trustServerCertificate=true;"
+    dbtable: "dbo.produccion_actual" # Asumo que la tabla se llama igual dentro
+    driver: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+    user: "${env:SQL_USER}"
+    password: "${env:SQL_PASSWORD}"
+
+raw_pda_produccion:
+  type: spark.SparkDataset
+  filepath: data/01_raw/pda_produccion.parquet
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+
+# ====================================================
+# 3. PATSAC (Tercera Base de Datos)
+# ====================================================
+sql_patsac_produccion:
+  type: spark.SparkDataset
+  filepath: "/tmp/dummy_patsac"
+  file_format: jdbc
+  load_args:
+    # CAMBIO AQUÍ: databaseName=patsac
+    url: "jdbc:sqlserver://54.82.95.244:1433;databaseName=patsac;encrypt=true;trustServerCertificate=true;"
+    dbtable: "dbo.produccion_actual"
+    driver: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+    user: "${env:SQL_USER}"
+    password: "${env:SQL_PASSWORD}"
+
+raw_patsac_produccion:
+  type: spark.SparkDataset
+  filepath: data/01_raw/patsac_produccion.parquet
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+
+# --- CAPA SILVER (Intermediate) ---
+int_produccion_unificada:
+  type: spark.SparkDataset
+  filepath: data/02_intermediate/produccion_unificada.parquet
   file_format: parquet
   save_args:
     mode: "overwrite"
