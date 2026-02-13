@@ -12,8 +12,8 @@ sql_primar_produccion:
     user: "${env:SQL_USER}"
     password: "${env:SQL_PASSWORD}"
     numPartitions: 4
-    partitionColumn: "FechaProduccion"  # <--- Cambia 'fecha_produccion' por 'FechaProduccion'
-    lowerBound: "2025-01-01 00:00:00"   # Agregamos la hora por seguridad para el formato Timestamp
+    partitionColumn: "FechaProduccion"  
+    lowerBound: "2025-01-01 00:00:00" 
     upperBound: "2026-12-31 23:59:59"
     fetchsize: "10000"
 
@@ -32,8 +32,8 @@ sql_pda_produccion:
     user: "${env:SQL_USER}"
     password: "${env:SQL_PASSWORD}"
     numPartitions: 4
-    partitionColumn: "FechaProduccion"  # <--- Cambia 'fecha_produccion' por 'FechaProduccion'
-    lowerBound: "2025-01-01 00:00:00"   # Agregamos la hora por seguridad para el formato Timestamp
+    partitionColumn: "FechaProduccion" 
+    lowerBound: "2025-01-01 00:00:00" 
     upperBound: "2026-12-31 23:59:59"
     fetchsize: "10000"
 
@@ -51,8 +51,8 @@ sql_patsac_produccion:
     user: "${env:SQL_USER}"
     password: "${env:SQL_PASSWORD}"
     numPartitions: 4
-    partitionColumn: "FechaProduccion"  # <--- Cambia 'fecha_produccion' por 'FechaProduccion'
-    lowerBound: "2025-01-01 00:00:00"   # Agregamos la hora por seguridad para el formato Timestamp
+    partitionColumn: "FechaProduccion" 
+    lowerBound: "2025-01-01 00:00:00"  
     upperBound: "2026-12-31 23:59:59"
     fetchsize: "10000"
 
@@ -70,6 +70,14 @@ int_produccion_unificada:
 prm_produccion_enriquecida:
   type: spark.SparkDataset
   filepath: data/03_primary/produccion_enriquecida.parquet
+  file_format: parquet
+  save_args:
+    mode: "overwrite"
+
+# --- CAPA REPORTING ---
+rep_dim_calendario:
+  type: spark.SparkDataset
+  filepath: data/08_reporting/dim_calendario.parquet
   file_format: parquet
   save_args:
     mode: "overwrite"

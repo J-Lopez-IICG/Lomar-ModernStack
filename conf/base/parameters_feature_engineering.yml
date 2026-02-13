@@ -4,3 +4,60 @@ produccion:
   calidad_premium_label: "premium"
   proceso_almacenaje_old: "almacenaje"
   proceso_almacenaje_new: "almacenamiento"
+  
+  # Nuevos parámetros para el cálculo WFE
+  wfe_yield_standards:
+    'entero con visceras': 1.0
+    'filete con piel pbi congelado': 0.63
+    'filete con piel pbo congelado': 0.63
+    'filete con piel pbo fresco': 0.63
+    'filete pbo': 0.63
+    'filete pbo c/piel fco.': 0.63
+    'filete pbo c/piel iqf': 0.63
+    'filete pbo c/piel ivp': 0.63
+    'filete pbo s/piel fco.': 0.63
+    'filete pbo s/piel ivp': 0.63
+    'filete sin piel pbo congelado': 0.61
+    'filete trim d congelado': 0.60
+    'filete trim d fresco': 0.60
+    'filete trim e congelado': 0.58
+    'filete trim e ahumado congelad': 0.55
+    'hg congelado': 0.84
+    'hg fco': 0.84
+    'hg fco eviscerado': 0.84
+    'hg fresco': 0.84
+    'hon congelado': 0.84
+    'ovas congeladas': 0.18
+    'ovas congeladas (37875)': 0.18
+    'b&p congelado': 0.50
+    'bit&pieces': 0.50
+    'porcion con piel congelado': 0.55
+    'sliced ahumado': 0.52
+  
+  bap_mapping:
+    "bap-4": "bap4"
+    "n/a": "desconocido"
+    "none": "desconocido"
+  
+  product_categories:
+    "TRIM E": ["trim e"]
+    "TRIM D": ["trim d"]
+    "TRIM C": ["trim c"]
+    "TRIM A": ["trim a"]
+    "LOIN": ["loin"]
+    
+    "HON": ["hon"]
+    "HG": ["hg"]
+    "ENTERO": ["entera", "entero"]
+    
+    "PORCIÓN": ["porcion", "porción"]
+    "SLICE": ["slice"]
+    "SHIO HARAMI": ["shio harami", "harami"]
+    "AHUMADO": ["ahumado"] 
+    
+    "B&P": ["bit and pieces", "bits and pieces", "b&p", "bit", "bits"] 
+    "OVAS": ["ova"]
+    "COLAS": ["cola"]
+    "SUBPRODUCTOS": ["recorte", "pulpa", "trozos"]
+    
+    "RESIDUOS": ["residuo", "desecho", "piso", "collar", "esquelon"]
