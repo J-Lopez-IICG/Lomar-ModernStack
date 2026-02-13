@@ -1,10 +1,15 @@
-"""
-This is a boilerplate pipeline 'feature_engineering'
-generated using Kedro 1.2.0
-"""
-
-from kedro.pipeline import Node, Pipeline  # noqa
+from kedro.pipeline import Pipeline, node, pipeline
+from .nodes import generar_kpis_produccion
 
 
 def create_pipeline(**kwargs) -> Pipeline:
-    return Pipeline([])
+    return pipeline(
+        [
+            node(
+                func=generar_kpis_produccion,
+                inputs=["int_produccion_unificada", "params:produccion"],
+                outputs="prm_produccion_enriquecida",
+                name="generar_kpis_produccion_node",
+            ),
+        ]
+    )

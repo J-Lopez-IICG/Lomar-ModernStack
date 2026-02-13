@@ -1,73 +1,75 @@
 # ====================================================
-# 1. PRIMAR (Tu entrada original)
+# 1. PRIMAR
 # ====================================================
 sql_primar_produccion:
   type: spark.SparkDataset
-  filepath: "/tmp/dummy_primar"
+  filepath: "/tmp/primar"
   file_format: jdbc
   load_args:
-    # Fíjate en databaseName=primar
     url: "jdbc:sqlserver://54.82.95.244:1433;databaseName=primar;encrypt=true;trustServerCertificate=true;"
     dbtable: "dbo.produccion_actual"
     driver: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
     user: "${env:SQL_USER}"
     password: "${env:SQL_PASSWORD}"
+    numPartitions: 4
+    partitionColumn: "FechaProduccion"  # <--- Cambia 'fecha_produccion' por 'FechaProduccion'
+    lowerBound: "2025-01-01 00:00:00"   # Agregamos la hora por seguridad para el formato Timestamp
+    upperBound: "2026-12-31 23:59:59"
+    fetchsize: "10000"
 
-raw_primar_produccion:
-  type: spark.SparkDataset
-  filepath: data/01_raw/primar_produccion.parquet
-  file_format: parquet
-  save_args:
-    mode: "overwrite"
 
 # ====================================================
-# 2. PDA (Segunda Base de Datos)
+# 2. PDA
 # ====================================================
 sql_pda_produccion:
   type: spark.SparkDataset
-  filepath: "/tmp/dummy_pda"
+  filepath: "/tmp/pda" 
   file_format: jdbc
   load_args:
-    # CAMBIO AQUÍ: databaseName=pda
     url: "jdbc:sqlserver://54.82.95.244:1433;databaseName=pda;encrypt=true;trustServerCertificate=true;"
-    dbtable: "dbo.produccion_actual" # Asumo que la tabla se llama igual dentro
+    dbtable: "dbo.produccion_actual"
     driver: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
     user: "${env:SQL_USER}"
     password: "${env:SQL_PASSWORD}"
-
-raw_pda_produccion:
-  type: spark.SparkDataset
-  filepath: data/01_raw/pda_produccion.parquet
-  file_format: parquet
-  save_args:
-    mode: "overwrite"
+    numPartitions: 4
+    partitionColumn: "FechaProduccion"  # <--- Cambia 'fecha_produccion' por 'FechaProduccion'
+    lowerBound: "2025-01-01 00:00:00"   # Agregamos la hora por seguridad para el formato Timestamp
+    upperBound: "2026-12-31 23:59:59"
+    fetchsize: "10000"
 
 # ====================================================
-# 3. PATSAC (Tercera Base de Datos)
+# 3. PATSAC
 # ====================================================
 sql_patsac_produccion:
   type: spark.SparkDataset
-  filepath: "/tmp/dummy_patsac"
+  filepath: "/tmp/patsac"
   file_format: jdbc
   load_args:
-    # CAMBIO AQUÍ: databaseName=patsac
     url: "jdbc:sqlserver://54.82.95.244:1433;databaseName=patsac;encrypt=true;trustServerCertificate=true;"
     dbtable: "dbo.produccion_actual"
     driver: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
     user: "${env:SQL_USER}"
     password: "${env:SQL_PASSWORD}"
+    numPartitions: 4
+    partitionColumn: "FechaProduccion"  # <--- Cambia 'fecha_produccion' por 'FechaProduccion'
+    lowerBound: "2025-01-01 00:00:00"   # Agregamos la hora por seguridad para el formato Timestamp
+    upperBound: "2026-12-31 23:59:59"
+    fetchsize: "10000"
 
-raw_patsac_produccion:
+# ====================================================
+# CAPA INTERMEDIA (Silver)
+# ====================================================
+int_produccion_unificada:
   type: spark.SparkDataset
-  filepath: data/01_raw/patsac_produccion.parquet
+  filepath: data/02_intermediate/produccion_unificada.parquet
   file_format: parquet
   save_args:
     mode: "overwrite"
 
-# --- CAPA SILVER (Intermediate) ---
-int_produccion_unificada:
+# --- CAPA PRIMARY (Gold) ---
+prm_produccion_enriquecida:
   type: spark.SparkDataset
-  filepath: data/02_intermediate/produccion_unificada.parquet
+  filepath: data/03_primary/produccion_enriquecida.parquet
   file_format: parquet
   save_args:
     mode: "overwrite"

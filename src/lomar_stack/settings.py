@@ -1,4 +1,5 @@
 """Project settings."""
+
 from kedro.config import OmegaConfigLoader
 from omegaconf import OmegaConf
 import os

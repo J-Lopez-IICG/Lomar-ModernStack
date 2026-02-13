@@ -1,5 +1,6 @@
-# This is a boilerplate parameters config generated for pipeline 'feature_engineering'
-# using Kedro 1.2.0.
-#
-# Documentation for this file format can be found in "Parameters"
-# Link: https://docs.kedro.org/en/1.2.0/configuration/parameters.html
+# conf/base/parameters/feature_engineering.yml
+produccion:
+  conversion_ton: 1000
+  calidad_premium_label: "premium"
+  proceso_almacenaje_old: "almacenaje"
+  proceso_almacenaje_new: "almacenamiento"
