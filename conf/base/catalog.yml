@@ -69,7 +69,7 @@ int_produccion_unificada:
 # --- CAPA PRIMARY (Gold) ---
 prm_produccion_enriquecida:
   type: spark.SparkDataset
-  filepath: data/03_primary/produccion_enriquecida.parquet
+  filepath: gs://lomar-data-portafolio/gold/produccion_enriquecida.parquet
   file_format: parquet
   save_args:
     mode: "overwrite"
@@ -77,7 +77,7 @@ prm_produccion_enriquecida:
 # --- CAPA REPORTING ---
 rep_dim_calendario:
   type: spark.SparkDataset
-  filepath: data/08_reporting/dim_calendario.parquet
+  filepath: gs://lomar-data-portafolio/gold/dim_calendario.parquet
   file_format: parquet
   save_args:
     mode: "overwrite"

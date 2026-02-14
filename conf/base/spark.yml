@@ -33,3 +33,20 @@ spark.sql.adaptive.coalescePartitions.enabled: true
 # Define el tamaño objetivo de partición (128 MB).
 # Spark intentará ajustar las particiones para acercarse a este estándar de industria.
 spark.sql.adaptive.advisoryPartitionSizeInBytes: 134217728
+
+
+
+# 1. Cargar el JAR (usa la ruta que ya confirmamos)
+spark.jars: "/home/javier/spark_jars/gcs-connector-hadoop3-latest.jar"
+
+# 2. Configuración del Driver de Google (Ojo: He corregido los nombres de las clases)
+spark.hadoop.fs.gs.impl: "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem"
+spark.hadoop.fs.AbstractFileSystem.gs.impl: "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS"
+
+# 3. Autenticación
+spark.hadoop.google.cloud.auth.service.account.enable: "true"
+spark.hadoop.google.cloud.auth.service.account.json.keyfile: "/home/javier/keys/lomar-bibucket-b85f25ba9058.json"
+
+# 4. Forzar que Spark reconozca el esquema (Añade esta línea)
+spark.driver.extraClassPath: "/home/javier/spark_jars/gcs-connector-hadoop3-latest.jar"
+spark.executor.extraClassPath: "/home/javier/spark_jars/gcs-connector-hadoop3-latest.jar"
