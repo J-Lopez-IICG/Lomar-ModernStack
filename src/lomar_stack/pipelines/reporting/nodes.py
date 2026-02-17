@@ -33,6 +33,7 @@ def create_dim_calendar(data: DataFrame) -> DataFrame:
         .withColumn("nombre_mes", F.date_format(F.col("fecha"), "MMMM"))
         .withColumn("año_mes", F.date_format(F.col("fecha"), "yyyy-MM"))
         .withColumn("orden_mensual", (F.col("año") * 100) + F.col("mes_nro"))
+        .withColumn("fecha_proceso_bi", F.current_timestamp())
     )
 
     # Log para confirmar en consola

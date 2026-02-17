@@ -1,13 +1,12 @@
 # conf/base/parameters/feature_engineering.yml
 produccion:
-  conversion_ton: 1000
   calidad_premium_label: "premium"
   proceso_almacenaje_old: "almacenaje"
   proceso_almacenaje_new: "almacenamiento"
   
   # Nuevos parámetros para el cálculo WFE
   wfe_yield_standards:
-    'entero con visceras': 1.0
+    'entero con visceras': 0.98
     'filete con piel pbi congelado': 0.63
     'filete con piel pbo congelado': 0.63
     'filete con piel pbo fresco': 0.63
