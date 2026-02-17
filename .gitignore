@@ -170,3 +170,6 @@ webserver_config.py
 *.db
 *.jar
 .secrets.sh
+
+# Credenciales de Google Cloud
+lomar-bibucket-*.json

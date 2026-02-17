@@ -1,52 +1,26 @@
 # ========================================================
-# CONFIGURACIÓN DE SPARK - ENTORNO LOCAL
+# CONFIGURACIÓN DE SPARK - ESTÁNDAR DE PROYECTO
 # ========================================================
-
-# Identificación de la aplicación en el Cluster/Logs
 spark.app.name: "Lomar_ModernStack"
-
-# Define el modo de ejecución: "local[*]" usa todos los núcleos de CPU disponibles
 spark.master: "local[*]"
 
 # --- GESTIÓN DE RECURSOS ---
-# Memoria asignada al proceso Driver (Orquestador). 
-# 4GB es suficiente para desarrollo local y volúmenes medios de datos.
 spark.driver.memory: "4g"
 
-# --- ESTANDARIZACIÓN ---
-# Fuerza la zona horaria a UTC para evitar desfases al leer DateTime de SQL Server
+# --- ESTÁNDARES DE DATOS ---
 spark.sql.session.timeZone: "UTC"
+spark.sql.sources.partitionOverwriteMode: "dynamic"
 
-# --- OPTIMIZACIÓN DE SHUFFLE (MEZCLA) ---
-# Reduce el número de particiones por defecto (200) a 8.
-# Vital para datos pequeños (<10GB) para evitar overhead excesivo en Joins/Agregaciones.
+# --- OPTIMIZACIÓN DE RENDIMIENTO ---
 spark.sql.shuffle.partitions: 8
-
-# --- ADAPTIVE QUERY EXECUTION (AQE) - AUTOMATIZACIÓN ---
-# Habilita la optimización dinámica de planes de ejecución en tiempo real.
 spark.sql.adaptive.enabled: true
-
-# Permite a Spark fusionar particiones pequeñas automáticamente post-shuffle.
-# Esto evita tener muchos archivos pequeños sin intervención manual.
-spark.sql.adaptive.coalescePartitions.enabled: true
-
-# Define el tamaño objetivo de partición (128 MB).
-# Spark intentará ajustar las particiones para acercarse a este estándar de industria.
 spark.sql.adaptive.advisoryPartitionSizeInBytes: 134217728
 
-
-
-# 1. Cargar el JAR (usa la ruta que ya confirmamos)
-spark.jars: "/home/javier/spark_jars/gcs-connector-hadoop3-latest.jar"
-
-# 2. Configuración del Driver de Google (Ojo: He corregido los nombres de las clases)
+# --- CONECTOR GCS (Google Cloud Storage) ---
 spark.hadoop.fs.gs.impl: "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem"
 spark.hadoop.fs.AbstractFileSystem.gs.impl: "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS"
 
-# 3. Autenticación
-spark.hadoop.google.cloud.auth.service.account.enable: "true"
-spark.hadoop.google.cloud.auth.service.account.json.keyfile: "/home/javier/keys/lomar-bibucket-b85f25ba9058.json"
-
-# 4. Forzar que Spark reconozca el esquema (Añade esta línea)
-spark.driver.extraClassPath: "/home/javier/spark_jars/gcs-connector-hadoop3-latest.jar"
-spark.executor.extraClassPath: "/home/javier/spark_jars/gcs-connector-hadoop3-latest.jar"
+# --- RUTAS DE DEPENDENCIAS (Relativas a la raíz del proyecto) ---
+# Nota: El Hook de Python se encarga de convertir esto en rutas absolutas 
+# para que Spark no se pierda en WSL o Docker.
+spark.jars: "gcs-connector-hadoop3-latest.jar,mssql-jdbc-12.8.1.jre11.jar"

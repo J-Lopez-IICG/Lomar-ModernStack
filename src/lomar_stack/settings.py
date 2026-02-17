@@ -1,5 +1,6 @@
 """Project settings."""
 
+from lomar_stack.hooks import SparkHooks
 from kedro.config import OmegaConfigLoader
 from omegaconf import OmegaConf
 import os
@@ -23,4 +24,4 @@ CONFIG_LOADER_ARGS = {
 }
 
 # --- 3. HOOKS ---
-HOOKS = ()
+HOOKS = (SparkHooks(),)

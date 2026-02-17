@@ -1,25 +1,30 @@
 services:
-  # Cerebro y Músculo: Kedro + Spark
+  # Tu proyecto Kedro procesando datos
   kedro-spark:
-    image: jupyter/pyspark-notebook:latest
+    build: . 
+    image: lomar-kedro-img
     container_name: lomar_spark_env
     ports:
-      - "8888:8888" # Jupyter Notebook
-      - "4040:4040" # Spark UI
+      - "8888:8888"
+      - "4040:4040"
+      - "4141:4141"
     volumes:
       - .:/home/jovyan/work
+      # Aquí mapeamos tu archivo JSON real al nombre que usará el sistema
+      - ./lomar-bibucket-b85f25ba9058.json:/home/jovyan/work/gcp-key.json
     environment:
       - SPARK_MASTER=local[*]
+      - GOOGLE_APPLICATION_CREDENTIALS=/home/jovyan/work/gcp-key.json
 
-  # Jefe de Orquesta: Airflow
+  # El programador de tareas
   airflow:
     image: apache/airflow:2.7.1-python3.10
     container_name: lomar_airflow_env
-    user: "${AIRFLOW_UID:-1000}:0"
+    user: "1000:0" 
     command: standalone
     ports:
-      - "8080:8080" # Airflow Web UI
+      - "8080:8080"
     volumes:
       - .:/opt/airflow
     environment:
-      - AIRFLOW_CORE_LOAD_EXAMPLES=False
+      - AIRFLOW_CORE_LOAD_EXAMPLES: "False"
