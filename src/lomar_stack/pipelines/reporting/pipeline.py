@@ -7,8 +7,8 @@ def create_pipeline(**kwargs) -> Pipeline:
         [
             node(
                 func=create_dim_calendar,
-                # Usamos la tabla intermedia como "disparador"
-                inputs="int_produccion_unificada",
+                # Usamos un parámetro como disparador. Esto rompe la dependencia directa con tablas de producción
+                inputs="params:create_calendar_trigger",
                 outputs="rep_dim_calendario",
                 name="create_dim_calendar_node",
             ),

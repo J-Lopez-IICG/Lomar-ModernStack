@@ -10,8 +10,7 @@ class SparkHooks:
     def after_context_created(self, context) -> None:
         """Combina el spark.yml con las rutas dinámicas de los JARs"""
 
-        # 1. Cargamos la configuración de forma segura
-        # Esto busca en conf/base/spark.yml y devuelve un dict
+        # 1. Cargamos la configuración de forma segura (spark.yml)
         try:
             conf_loader = context.config_loader
             conf_params = conf_loader["spark"]
@@ -20,10 +19,15 @@ class SparkHooks:
 
         project_path = os.getcwd()
 
-        # 2. Definimos las rutas dinámicas
+        # 2. Definimos las rutas dinámicas y de seguridad
         gcs_jar = f"{project_path}/gcs-connector-hadoop3-latest.jar"
         sql_jar = f"{project_path}/mssql-jdbc-12.8.1.jre11.jar"
-        json_key = f"{project_path}/lomar-bibucket-b85f25ba9058.json"
+
+        # --- CAMBIO AQUÍ: Variable de Entorno ---
+        # Busca GCP_KEY_PATH en el sistema; si no está, usa la ruta local
+        json_key = os.environ.get(
+            "GCP_KEY_PATH", f"{project_path}/lomar-bibucket-b85f25ba9058.json"
+        )
 
         # 3. Iniciamos la configuración de Spark
         conf = SparkConf()
@@ -32,10 +36,12 @@ class SparkHooks:
         if isinstance(conf_params, dict):
             conf.setAll(list(conf_params.items()))
 
-        # 5. Forzamos las rutas críticas (Sobreescribe lo que haya en el yml)
+        # 5. Forzamos las rutas críticas
         conf.set("spark.jars", f"{gcs_jar},{sql_jar}")
         conf.set("spark.driver.extraClassPath", f"{gcs_jar}:{sql_jar}")
         conf.set("spark.executor.extraClassPath", f"{gcs_jar}:{sql_jar}")
+
+        # Usamos la variable json_key que ya es inteligente
         conf.set(
             "spark.hadoop.google.cloud.auth.service.account.json.keyfile", json_key
         )

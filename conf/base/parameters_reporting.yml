@@ -1,0 +1,4 @@
+# Parámetros para el pipeline de Reporting
+create_calendar_trigger:
+  fecha_inicio_calendario: "2025-01-01"
+  descripcion: "Este parámetro dispara la creación del calendario de producción"
