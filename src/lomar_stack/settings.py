@@ -5,13 +5,10 @@ from kedro.config import OmegaConfigLoader
 from omegaconf import OmegaConf
 import os
 
-# --- 1. REGISTRO DEL RESOLVER (El Truco Maestro) ---
-# Esto le enseña a Kedro a entender la sintaxis ${env:NOMBRE_VARIABLE}
-# Si la variable no existe, devolverá None en lugar de explotar.
+# --- 1. REGISTRO DEL RESOLVER ---
 try:
     OmegaConf.register_new_resolver("env", lambda x: os.environ.get(x))
 except ValueError:
-    # Si ya existe (por si reinicias el kernel), lo ignoramos
     pass
 
 # --- 2. CONFIGURACIÓN DEL CARGADOR ---

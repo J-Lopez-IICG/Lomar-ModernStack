@@ -18,9 +18,6 @@ def ingestar_raw_data(data: DataFrame) -> DataFrame:
     Returns:
         DataFrame: El mismo set de datos listo para ser procesado por la capa de integración.
     """
-
-    # Un Ingeniero Senior siempre valida que los datos no vengan vacíos antes de seguir
-    # pero sin disparar una acción pesada de Spark.
     logger.info(
         "Iniciando ingesta de datos. Esquema detectado con %d columnas.",
         len(data.columns),

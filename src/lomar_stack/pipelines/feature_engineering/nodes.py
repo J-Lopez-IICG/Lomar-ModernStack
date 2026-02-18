@@ -55,13 +55,10 @@ def generar_kpis_produccion(df: DataFrame, params: Dict[str, Any]) -> DataFrame:
 
         df = df.withColumn("producto_categoria", cat_expr)
 
-    # 4. WFE: Rendimiento Industrial (Corrigiendo el Warning de Spark 3)
+    # 4. WFE: Rendimiento Industrial
     if "presentacionmp" in df.columns:
         yield_map = params["wfe_yield_standards"]
         yield_expr = F.create_map([F.lit(x) for x in chain(*yield_map.items())])
-
-        # Usamos [] en lugar de .getItem() para silenciar el FutureWarning
-        # Cast a double para asegurar precisión en cálculos financieros/productivos
         df = df.withColumn(
             "factor_rendimiento", yield_expr[F.col("presentacionmp")].cast("double")
         )

@@ -22,10 +22,9 @@ def create_dim_calendar(_: Any) -> DataFrame:
     end_date_expr = F.last_day(F.add_months(F.trunc(F.current_date(), "year"), 11))
 
     # 3. Crear una fila semilla "en el aire" (Memory Only)
-    # Esto reemplaza al antiguo data.limit(1) y rompe la dependencia pesada
     seed_df = spark.createDataFrame([(1,)], ["id"])
 
-    # 4. Generar la secuencia (El esquema se mantiene EXACTAMENTE igual)
+    # 4. Generar la secuencia
     df_cal = seed_df.select(
         F.explode(
             F.sequence(
@@ -34,7 +33,7 @@ def create_dim_calendar(_: Any) -> DataFrame:
         ).alias("fecha")
     )
 
-    # 5. Dimensiones de tiempo (Mantenemos nombres de columnas para no romper Power BI)
+    # 5. Dimensiones de tiempo
     df_cal = (
         df_cal.withColumn("año", F.year(F.col("fecha")))
         .withColumn("mes_nro", F.month(F.col("fecha")))
