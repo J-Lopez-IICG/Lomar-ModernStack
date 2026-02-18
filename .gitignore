@@ -173,3 +173,5 @@ webserver_config.py
 
 # Credenciales de Google Cloud
 lomar-bibucket-*.json
+
+stats.json

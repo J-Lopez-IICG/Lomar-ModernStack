@@ -33,19 +33,25 @@ class SparkHooks:
         # 3. Iniciamos la configuración de Spark
         conf = SparkConf()
 
-        # 4. Si conf_params es un diccionario, cargamos sus valores
-        if isinstance(conf_params, dict):
-            conf.setAll(list(conf_params.items()))
+        # 4. Cargamos los valores del spark.yml de forma robusta
+        if conf_params:
+            for k, v in conf_params.items():
+                conf.set(str(k), str(v))
 
-        # 5. Forzamos las rutas críticas
+        # 5. Sobrescribimos con las rutas dinámicas absolutas
         conf.set("spark.jars", f"{gcs_jar},{sql_jar}")
         conf.set("spark.driver.extraClassPath", f"{gcs_jar}:{sql_jar}")
         conf.set("spark.executor.extraClassPath", f"{gcs_jar}:{sql_jar}")
+
+        # Agregamos la optimización de memoria:
+        conf.set("spark.driver.memory", "4g")
+        conf.set("spark.executor.memory", "4g")
 
         # Usamos la variable json_key que ya es inteligente
         conf.set(
             "spark.hadoop.google.cloud.auth.service.account.json.keyfile", json_key
         )
 
-        # 6. Creamos la sesión
-        SparkSession.builder.config(conf=conf).getOrCreate()
+        # 6. Creamos la sesión de forma explícita
+        builder = SparkSession.builder.config(conf=conf)  # type: ignore
+        builder.getOrCreate()

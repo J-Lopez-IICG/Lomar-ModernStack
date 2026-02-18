@@ -24,3 +24,7 @@ spark.hadoop.fs.AbstractFileSystem.gs.impl: "com.google.cloud.hadoop.fs.gcs.Goog
 # Nota: El Hook de Python se encarga de convertir esto en rutas absolutas 
 # para que Spark no se pierda en WSL o Docker.
 spark.jars: "gcs-connector-hadoop3-latest.jar,mssql-jdbc-12.8.1.jre11.jar"
+
+# warning: G1GC es una buena opción para cargas de trabajo mixtas
+spark.driver.extraJavaOptions: "-XX:+UseG1GC"
+spark.executor.extraJavaOptions: "-XX:+UseG1GC"

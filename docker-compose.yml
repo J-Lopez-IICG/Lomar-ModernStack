@@ -1,26 +1,30 @@
+version: '3.8'
+
 services:
   kedro-spark:
     build: .
     image: lomar-kedro-img
     container_name: lomar_spark_env
     ports:
-      - "8080:8080" # Airflow UI
       - "4040:4040" # Spark UI
       - "4141:4141" # Kedro Viz
     environment:
       - SPARK_MASTER=local[*]
-      # Docker Compose leerá estas variables de tu sesión activa de WSL
       - SQL_USER=${SQL_USER}
       - SQL_PASSWORD=${SQL_PASSWORD}
-      - GCP_KEY_PATH=${GCP_KEY_PATH}
+      - GCP_KEY_PATH=/app/lomar-bibucket-b85f25ba9058.json
     volumes:
       - .:/app
 
   airflow:
-    image: apache/airflow:2.7.1-python3.10
+    image: apache/airflow:2.7.1-python3.10 # Mantener por compatibilidad de plugins
     container_name: lomar_airflow_env
     command: standalone
     ports:
-      - "8081:8080" # Usamos 8081 si el 8080 está ocupado
+      - "8081:8080" # Airflow UI en el 8081
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - .:/opt/airflow
+      # Evitamos que Airflow se confunda con el venv de 3.12
+      - /dev/null:/opt/airflow/venv

@@ -1,21 +1,24 @@
 # --- NÚCLEO Y EXPLORACIÓN ---
-ipython==8.10
-jupyterlab==3.0
-notebook==7.5.3
+ipython==8.10.0
+jupyterlab==4.0.2
+notebook==7.0.0
 scikit-learn==1.5.1
 
-# --- KEDRO (Pipeline & Viz) ---
+# --- KEDRO CORE & VIZ ---
 kedro[jupyter]==1.2.0
-kedro-datasets==9.1
-kedro-viz==6.7.0
+kedro-viz==12.3.0
 kedro-airflow==0.7.0
 kedro-docker==0.6.0
-kedro-datasets[spark]==9.1.0
+toposort==1.10
 
-# --- PROCESAMIENTO (Músculo) ---
+# --- DATASETS Y CONECTORES ---
+kedro-datasets[spark,pandas,google-storage]==9.1.0
+hdfs==2.7.3
+
+# --- PROCESAMIENTO ---
 pyspark==3.5.0
 
-# --- CONECTIVIDAD NUBE (Data Lake) ---
-gcsfs==2026.2.0
-fsspec==2026.2.0
-s3fs==2026.2.0
+# --- CONECTIVIDAD NUBE ---
+gcsfs==2023.12.2.post1
+fsspec==2023.12.2
+s3fs==2023.12.2

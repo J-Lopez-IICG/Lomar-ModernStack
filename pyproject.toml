@@ -9,14 +9,17 @@ readme = "README.md"
 dynamic = ["version"]
 dependencies = [
     "kedro[jupyter]==1.2.0",
-    "kedro-datasets[spark, pandas, google]>=9.1.0",
-    "kedro-viz>=6.7.0",
+    "kedro-datasets[spark, pandas]>=9.1.0",
+    "kedro-viz>=12.3.0",
     "pyspark~=3.5.0",
     "scikit-learn~=1.5.1",
-    "gcsfs==2026.2.0",
-    "fsspec==2026.2.0",
-    "s3fs==2026.2.0",
-    "notebook==7.5.3",
+    "gcsfs==2023.12.2.post1",
+    "fsspec==2023.12.2",
+    "s3fs==2023.12.2",
+    "notebook==7.0.0",
+    "jupyterlab==4.0.2",
+    "hdfs==2.7.3",
+    "toposort==1.10",
 ]
 
 [project.scripts]
