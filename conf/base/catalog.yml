@@ -11,7 +11,7 @@ sql_primar_produccion:
     driver: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
     user: "${env:SQL_USER}"
     password: "${env:SQL_PASSWORD}"
-    numPartitions: 4
+    numPartitions: 8
     partitionColumn: "FechaProduccion"  
     lowerBound: "2025-01-01 00:00:00" 
     upperBound: "2026-12-31 23:59:59"
@@ -31,7 +31,7 @@ sql_pda_produccion:
     driver: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
     user: "${env:SQL_USER}"
     password: "${env:SQL_PASSWORD}"
-    numPartitions: 4
+    numPartitions: 8
     partitionColumn: "FechaProduccion" 
     lowerBound: "2025-01-01 00:00:00" 
     upperBound: "2026-12-31 23:59:59"
@@ -50,7 +50,7 @@ sql_patsac_produccion:
     driver: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
     user: "${env:SQL_USER}"
     password: "${env:SQL_PASSWORD}"
-    numPartitions: 4
+    numPartitions: 8
     partitionColumn: "FechaProduccion" 
     lowerBound: "2025-01-01 00:00:00"  
     upperBound: "2026-12-31 23:59:59"

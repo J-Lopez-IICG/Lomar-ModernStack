@@ -24,10 +24,11 @@ class SparkHooks:
         sql_jar = f"{project_path}/mssql-jdbc-12.8.1.jre11.jar"
 
         # --- CAMBIO AQUÍ: Variable de Entorno ---
-        # Busca GCP_KEY_PATH en el sistema; si no está, usa la ruta local
-        json_key = os.environ.get(
-            "GCP_KEY_PATH", f"{project_path}/lomar-bibucket-b85f25ba9058.json"
-        )
+        env_key = os.environ.get("GCP_KEY_PATH", "lomar-bibucket-b85f25ba9058.json")
+        if not os.path.exists(env_key):
+            json_key = os.path.join(project_path, os.path.basename(env_key))
+        else:
+            json_key = env_key
 
         # 3. Iniciamos la configuración de Spark
         conf = SparkConf()

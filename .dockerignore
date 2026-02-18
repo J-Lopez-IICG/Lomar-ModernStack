@@ -1,3 +1,11 @@
+# --- AJUSTES EXTRA PARA LOMAR STACK ---
+venv/
+.git/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+
 ##########################
 # Kedro PROJECT
 

@@ -1,20 +1,29 @@
-# Usa la imagen de Spark que ya tienes en Docker Desktop
-ARG BASE_IMAGE=jupyter/pyspark-notebook:latest
-FROM $BASE_IMAGE
+# 1. Imagen base más ligera (Python oficial)
+FROM python:3.12-slim-bookworm
 
-USER root
+# 2. Instalamos Java (Spark lo necesita) y herramientas básicas
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-17-jre-headless \
+    procps \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Actualizamos pip e instalamos tus librerías
-COPY requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+# 3. Variables de entorno
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PYSPARK_PYTHON=python3
+WORKDIR /app
 
-# Seteamos donde vivirá el proyecto dentro de Docker
-WORKDIR /home/jovyan/work
+# 4. Instalamos dependencias (Primero solo el requirements para aprovechar el caché)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiamos tu proyecto (el punto significa 'todo lo de esta carpeta')
-COPY --chown=jovyan:users . .
+# 5. Copiamos los archivos críticos del proyecto
+# No copiamos "todo" a ciegas para evitar meter basura
+COPY src/ /app/src/
+COPY conf/ /app/conf/
+COPY pyproject.toml /app/
+COPY *.jar /app/
+COPY *.json /app/ 
 
-# Puertos para Jupyter, Spark y Kedro-Viz
-EXPOSE 8888 4040 4141
-
-CMD ["kedro", "run"]
+# 7. Ejecución
+# Usamos "bash -c" para cargar los secretos antes de correr kedro
+CMD ["/bin/bash", "-c", "source .secrets.sh && kedro run"]

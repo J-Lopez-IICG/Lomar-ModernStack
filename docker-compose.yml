@@ -1,30 +1,26 @@
 services:
-  # Tu proyecto Kedro procesando datos
   kedro-spark:
-    build: . 
+    build: .
     image: lomar-kedro-img
     container_name: lomar_spark_env
     ports:
-      - "8888:8888"
-      - "4040:4040"
-      - "4141:4141"
-    volumes:
-      - .:/home/jovyan/work
-      # Aquí mapeamos tu archivo JSON real al nombre que usará el sistema
-      - ./lomar-bibucket-b85f25ba9058.json:/home/jovyan/work/gcp-key.json
+      - "8080:8080" # Airflow UI
+      - "4040:4040" # Spark UI
+      - "4141:4141" # Kedro Viz
     environment:
       - SPARK_MASTER=local[*]
-      - GOOGLE_APPLICATION_CREDENTIALS=/home/jovyan/work/gcp-key.json
+      # Docker Compose leerá estas variables de tu sesión activa de WSL
+      - SQL_USER=${SQL_USER}
+      - SQL_PASSWORD=${SQL_PASSWORD}
+      - GCP_KEY_PATH=${GCP_KEY_PATH}
+    volumes:
+      - .:/app
 
-  # El programador de tareas
   airflow:
     image: apache/airflow:2.7.1-python3.10
     container_name: lomar_airflow_env
-    user: "1000:0" 
     command: standalone
     ports:
-      - "8080:8080"
+      - "8081:8080" # Usamos 8081 si el 8080 está ocupado
     volumes:
       - .:/opt/airflow
-    environment:
-      - AIRFLOW_CORE_LOAD_EXAMPLES: "False"
