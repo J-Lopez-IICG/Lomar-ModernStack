@@ -8,14 +8,12 @@ def create_dim_calendar(_: Any) -> DataFrame:
     """
     Genera un calendario dinámico desde 2025-01-01 hasta el fin del año actual.
 
-    OPTIMIZACIÓN SENIOR: Se elimina la dependencia de datos físicos. Ahora genera
-    la secuencia en memoria, evitando que Spark relea tablas de producción
-    solo para obtener una fila semilla.
     """
     logger = logging.getLogger(__name__)
 
     # 1. Obtener la sesión activa de Spark
-    spark = SparkSession.builder.getOrCreate()
+    spark = SparkSession.getActiveSession()
+    assert spark is not None
 
     # 2. Definir el inicio fijo y el fin dinámico
     start_date = "2025-01-01"
@@ -40,7 +38,10 @@ def create_dim_calendar(_: Any) -> DataFrame:
         .withColumn("nombre_mes", F.date_format(F.col("fecha"), "MMMM"))
         .withColumn("año_mes", F.date_format(F.col("fecha"), "yyyy-MM"))
         .withColumn("orden_mensual", (F.col("año") * 100) + F.col("mes_nro"))
-        .withColumn("fecha_proceso_bi", F.current_timestamp())
+        .withColumn(
+            "fecha_proceso_bi",
+            F.from_utc_timestamp(F.current_timestamp(), "America/Santiago"),
+        )
     )
 
     logger.info(f"Calendario dinámico generado independientemente desde {start_date}.")
