@@ -9,8 +9,6 @@ conf/**/*credentials*
 
 # Bloqueo masivo de JSONs (para evitar subir tokens por error)
 *.json
-# EXCEPCIÓN: Permitimos explícitamente la llave de GCP
-!lomar-bibucket-b85f25ba9058.json
 
 # ==========================================
 # 2. ENTORNO Y SISTEMA (BASURA)

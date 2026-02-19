@@ -5,26 +5,32 @@ services:
     image: lomar-kedro-img
     container_name: lomar_spark_env
     ports:
-      - "4040:4040" # Spark UI (Monitor de trabajos)
-      - "4141:4141" # Kedro Viz (Gráfico del pipeline)
+      - "4040:4040" # Spark UI
+      - "4141:4141" # Kedro Viz
     environment:
-      # 1. Configuración interna de Spark
+      # 1. Configuración interna
       - SPARK_MASTER=local[*]
-      # 2. INYECCIÓN DE SECRETOS (Vienen de tu terminal 'source')
+      
+      # 2. INYECCIÓN DE SECRETOS (Dinámico desde .secrets.sh)
       - SQL_USER=${SQL_USER}
       - SQL_PASSWORD=${SQL_PASSWORD}
-      # 3. RUTA FIJA INTERNA (El JSON ya vive en /app dentro del container)
-      - GCP_KEY_PATH=/app/lomar-bibucket-b85f25ba9058.json
+      
+      # 3. LLAVE GOOGLE (Dinámico)
+      # Docker recibirá "lomar-bibucket...json". 
+      # Como hooks.py busca en la carpeta actual (/app), esto funciona perfecto.
+      - GCP_KEY_PATH=${GCP_KEY_PATH}
+
     volumes:
-      # EL MAPEO MÁGICO:
-      # Esto hace que tu carpeta local "." se vea en "/app" dentro del container.
-      # Si cambias código en VS Code, cambia dentro del Docker al instante.
+      # A. CÓDIGO Y ARCHIVOS (Incluye el .json de Google)
       - .:/app
       
-      # SEGURIDAD BLINDADA:
-      # Esto "oculta" el archivo de secretos dentro del contenedor.
-      # Aunque esté en tu carpeta local, dentro del docker se verá vacío o inaccesible.
+      # B. SEGURIDAD (Ocultar secretos del sistema operativo)
       - /dev/null:/app/.secrets.sh
+      
+      # C. ESTABILIDAD (Ocultar el entorno virtual local)
+      # Esto evita que Docker se confunda con tus librerías locales.
+      # Docker usará las que instaló él mismo en el paso de Build.
+      - /dev/null:/app/venv 
 
   # --- SERVICIO ORQUESTADOR: AIRFLOW ---
   airflow:
@@ -32,12 +38,11 @@ services:
     container_name: lomar_airflow_env
     command: standalone
     ports:
-      - "8081:8080" # Airflow UI en el puerto 8081
+      - "8081:8080"
     environment:
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
       - .:/opt/airflow
-      # HACK DE COMPATIBILIDAD:
-      # Airflow usa Python 3.10, tu venv es 3.12.
-      # Esto evita que Airflow intente leer tu venv local y explote.
+      # Misma protección para Airflow
       - /dev/null:/opt/airflow/venv
+      - /dev/null:/opt/airflow/.secrets.sh
