@@ -8,29 +8,16 @@ services:
       - "4040:4040" # Spark UI
       - "4141:4141" # Kedro Viz
     environment:
-      # 1. Configuración interna
       - SPARK_MASTER=local[*]
-      
-      # 2. INYECCIÓN DE SECRETOS (Dinámico desde .secrets.sh)
       - SQL_USER=${SQL_USER}
       - SQL_PASSWORD=${SQL_PASSWORD}
-      
-      # 3. LLAVE GOOGLE (Dinámico)
-      # Docker recibirá "lomar-bibucket...json". 
-      # Como hooks.py busca en la carpeta actual (/app), esto funciona perfecto.
       - GCP_KEY_PATH=${GCP_KEY_PATH}
 
     volumes:
-      # A. CÓDIGO Y ARCHIVOS (Incluye el .json de Google)
+      # Monta toda tu carpeta local
       - .:/app
-      
-      # B. SEGURIDAD (Ocultar secretos del sistema operativo)
-      - /dev/null:/app/.secrets.sh
-      
-      # C. ESTABILIDAD (Ocultar el entorno virtual local)
-      # Esto evita que Docker se confunda con tus librerías locales.
-      # Docker usará las que instaló él mismo en el paso de Build.
-      - /dev/null:/app/venv 
+      # VOLUMEN ANÓNIMO: Esto "oculta" tu venv local aislando la carpeta
+      - /app/venv 
 
   # --- SERVICIO ORQUESTADOR: AIRFLOW ---
   airflow:
@@ -42,7 +29,7 @@ services:
     environment:
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
     volumes:
-      - .:/opt/airflow
-      # Misma protección para Airflow
-      - /dev/null:/opt/airflow/venv
-      - /dev/null:/opt/airflow/.secrets.sh
+      # SOLO mapeamos la carpeta de DAGs (Instrucciones)  
+      - ./dags:/opt/airflow/dags
+      # Le damos acceso al motor de Docker para que luego pueda despertar a Kedro
+      - /var/run/docker.sock:/var/run/docker.sock
