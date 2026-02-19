@@ -1,34 +1,58 @@
-# --- AJUSTES EXTRA PARA LOMAR STACK ---
-venv/
-.git/
-__pycache__/
-*.pyc
-.ipynb_checkpoints/
-.DS_Store
-
-##########################
-# Kedro PROJECT
-
-# ignore Dockerfile and .dockerignore
-Dockerfile
-.dockerignore
-
-# ignore potentially sensitive credentials files
+# ==========================================
+# 1. SEGURIDAD (CRÍTICO)
+# ==========================================
+# Evita que las claves y secretos se copien a la imagen
+.secrets.sh
+.env
+conf/local/
 conf/**/*credentials*
 
-# ignore all local configuration
-conf/local
-!conf/local/.gitkeep
+# Bloqueo masivo de JSONs (para evitar subir tokens por error)
+*.json
+# EXCEPCIÓN: Permitimos explícitamente la llave de GCP
+!lomar-bibucket-b85f25ba9058.json
 
-# ignore everything in the following folders
-data
-logs
-notebooks
-references
-results
+# ==========================================
+# 2. ENTORNO Y SISTEMA (BASURA)
+# ==========================================
+# Ignoramos el entorno virtual (lo creamos nuevo dentro de Docker)
+venv/
+.venv/
+env/
 
-# except the following
+# Archivos de compilación de Python (no sirven en Linux/Docker)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de sistema y Git
+.git/
+.gitignore
+.DS_Store
+.vscode/
+.idea/
+
+# ==========================================
+# 3. DATOS Y ARTEFACTOS DE KEDRO
+# ==========================================
+# No queremos copiar gigabytes de datos al contenedor
+data/
+logs/
+notebooks/
+references/
+results/
+stats.json
+
+# Mantenemos los .gitkeep para que las carpetas existan
+!data/.gitkeep
 !logs/.gitkeep
 !notebooks/.gitkeep
-!references/.gitkeep
-!results/.gitkeep
+
+# ==========================================
+# 4. CONTEXTO DE DOCKER
+# ==========================================
+# No necesitas el Dockerfile dentro del contenedor
+Dockerfile
+.dockerignore
+docker-compose.yml
