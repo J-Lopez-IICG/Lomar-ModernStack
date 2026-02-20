@@ -4,32 +4,33 @@ services:
     build: .
     image: lomar-kedro-img
     container_name: lomar_spark_env
+    # Esto sobreescribe el "kedro run" y lo deja encendido sin hacer nada
+    command: tail -f /dev/null
+    tty: true
+    stdin_open: true
     ports:
-      - "4040:4040" # Spark UI
-      - "4141:4141" # Kedro Viz
+      - "4040:4040"
+      - "4141:4141"
     environment:
       - SPARK_MASTER=local[*]
       - SQL_USER=${SQL_USER}
       - SQL_PASSWORD=${SQL_PASSWORD}
       - GCP_KEY_PATH=${GCP_KEY_PATH}
-
     volumes:
-      # Monta toda tu carpeta local
       - .:/app
-      # VOLUMEN ANÓNIMO: Esto "oculta" tu venv local aislando la carpeta
       - /app/venv 
 
   # --- SERVICIO ORQUESTADOR: AIRFLOW ---
   airflow:
     image: apache/airflow:2.7.1-python3.10
     container_name: lomar_airflow_env
+    user: root
     command: standalone
     ports:
       - "8081:8080"
     environment:
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - DOCKER_API_VERSION=1.44
     volumes:
-      # SOLO mapeamos la carpeta de DAGs (Instrucciones)  
       - ./dags:/opt/airflow/dags
-      # Le damos acceso al motor de Docker para que luego pueda despertar a Kedro
       - /var/run/docker.sock:/var/run/docker.sock
