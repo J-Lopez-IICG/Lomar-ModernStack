@@ -12,7 +12,8 @@ conf/**/*credentials*
 data/**
 
 # except their sub-folders
-!data/**/
+!data/08_reporting/
+!data/08_reporting/kedro-viz.png
 
 # also keep all .gitkeep files
 !.gitkeep

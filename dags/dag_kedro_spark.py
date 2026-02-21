@@ -13,6 +13,5 @@ with DAG(
     # En tu archivo dag_kedro_spark.py
     run_kedro = BashOperator(
         task_id="run_kedro_spark",
-        # Añadimos DOCKER_API_VERSION justo antes del comando
         bash_command="export DOCKER_API_VERSION=1.44 && docker exec lomar_spark_env kedro run",
     )
