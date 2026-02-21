@@ -22,9 +22,9 @@ Tecnologías y detalles por componente
 - Uso de `catalog.yml` para declarar datasets y orígenes (local, GCS).
 - Optimización de nodos: dividir lógica en nodes pequeños y deterministas, usar `parameters` para evitar hardcode, habilitar `kedro.io` caching cuando aplique.
 
-Comunicación entre pipelines (gráfico)
+**Comunicación entre pipelines y sistemas**
 
-Después de la sección de Kedro, es útil ver cómo se comunican los pipelines entre sí y con los sistemas externos (catálogo, almacenamiento y orquestador). A continuación hay un diagrama Mermaid que representa el flujo general y las dependencias.
+A continuación hay un diagrama Mermaid que representa el flujo general y las dependencias.
 
 ```mermaid
 flowchart TB
