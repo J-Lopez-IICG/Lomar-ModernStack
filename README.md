@@ -27,45 +27,39 @@ Comunicación entre pipelines (gráfico)
 Después de la sección de Kedro, es útil ver cómo se comunican los pipelines entre sí y con los sistemas externos (catálogo, almacenamiento y orquestador). A continuación hay un diagrama Mermaid que representa el flujo general y las dependencias.
 
 ```mermaid
-flowchart LR
-	subgraph Orquestador
-		Airflow[AIRFLOW DAGs]
-	end
+flowchart TB
+  subgraph Orquestador
+    Airflow[AIRFLOW DAGs]
+  end
 
-	subgraph Pipelines
-		DI[data_ingestion]
-		DP[data_processing]
-		FE[feature_engineering]
-		RP[reporting]
-	end
+  subgraph Pipelines
+    DI[data_ingestion]
+    DP[data_processing]
+    FE[feature_engineering]
+    RP[reporting]
+  end
 
-	subgraph Storage
-		GCS[(GCS / Buckets .parquet)]
-		Catalog[(Kedro Catalog)]
-	end
+  subgraph Storage
+    GCS[(GCS / Buckets .parquet)]
+    Catalog[(Kedro Catalog)]
+    PowerBI[Power BI]
+  end
 
-	Airflow --> DI
-	DI -->|raw.parquet| GCS
-	DI --> Catalog
-	DP -->|processed.parquet| GCS
-	DP --> Catalog
-	FE -->|features.parquet| GCS
-	FE --> Catalog
-	RP -->|reports/metrics| GCS
-	RP --> Catalog
+  Airflow --> DI
+  DI --> Catalog
+  DI --> DP
+  DP --> Catalog
+  DP --> FE
+  FE --> Catalog
+  FE -->|features.parquet| GCS
+  RP --> Catalog
+  RP -->|reports/metrics.parquet| GCS
+  GCS --> PowerBI
+  Catalog --> RP
 
-	DI --> DP
-	DP --> FE
-	FE --> RP
-	Catalog --> RP
-
-	click GCS "https://cloud.google.com/storage" "Google Cloud Storage"
-	click Catalog "conf/base/catalog.yml" "Ver catálogo"
+  click GCS "https://cloud.google.com/storage" "Google Cloud Storage"
+  click Catalog "conf/base/catalog.yml" "Ver catálogo"
 ```
-
-Si prefieres una imagen estática, coloca el fichero `pipelines-communication.png` en `data/08_reporting/` y quedará referenciado desde aquí:
-
-![Comunicación entre pipelines](data/08_reporting/pipelines-communication.png)
 
 **PySpark**:
 - Lectura/escritura en formato Parquet para eficiencia y compatibilidad con particionado.
