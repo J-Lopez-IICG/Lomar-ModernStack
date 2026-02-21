@@ -6,7 +6,7 @@ Proyecto de integración de pipelines de datos basados en Kedro y PySpark, prepa
 
 **Visualización de KPIs**
 
-- Dashboard interactivo en Power BI: "https://app.powerbi.com/view?r=eyJrIjoiNGRlMThhMTktZTcyOC00YmE4LWI2YTYtNmFjNWNlMThlNjM1IiwidCI6ImRmNGI2MzcyLWEwM2EtNDZmMC05YmY1LTdmOGQzNzhhMzMzNCIsImMiOjR9"
+* **Dashboard Interactivo:** [Acceder al Reporte en Power BI Pro](https://app.powerbi.com/view?r=eyJrIjoiNGRlMThhMTktZTcyOC00YmE4LWI2YTYtNmFjNWNlMThlNjM1IiwidCI6ImRmNGI2MzcyLWEwM2EtNDZmMC05YmY1LTdmOGQzNzhhMzMzNCIsImMiOjR9)
 
 **Estructura de los pipelines**
 
@@ -116,14 +116,6 @@ Notas sobre `hooks.py`
 
 - `src/lomar_stack/hooks.py` carga `GCP_KEY_PATH` y construye una ruta `json_key` que luego se establece en la configuración Spark como `spark.hadoop.google.cloud.auth.service.account.json.keyfile`.
 - Esto implica que Spark necesita acceso al fichero en la ruta pasada; en entornos distribuidos (Spark en cluster) asegúrese de que el fichero sea accesible desde los nodos ejecutores o utilice credenciales soportadas por la plataforma (ADC, secretos de cluster).
-
-Checklist rápida de seguridad
-
-- [ ] `lomar-bibucket-b85f25ba9058.json` está en `.gitignore`.
-- [ ] El fichero JSON se monta como volumen con permisos restringidos.
-- [ ] Uso de roles IAM con menor privilegio posible.
-- [ ] Rotación periódica de credenciales.
-- [ ] Evaluar migrar a Secret Manager o Workload Identity para despliegues en cloud.
 
 
 
