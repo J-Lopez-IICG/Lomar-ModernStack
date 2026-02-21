@@ -6,7 +6,7 @@ Proyecto de integración de pipelines de datos basados en Kedro y PySpark, prepa
 
 **Visualización de KPIs**
 
-- Dashboard interactivo en Power BI: "https://app.powerbi.com/view?r=eyJrIjoiNGRlMThhMTktZTcyOC00YmE4LWI2YTYtNmFjNWNlMThlNjM1IiwidCI6ImRmNGI2MzcyLWEwM2EtNDZmMC05YmY1LTdmOGQzNzhhMzMzNCIsImMiOjR9"
+* **Dashboard Interactivo:** [Acceder al Reporte en Power BI Pro](https://app.powerbi.com/view?r=eyJrIjoiNGRlMThhMTktZTcyOC00YmE4LWI2YTYtNmFjNWNlMThlNjM1IiwidCI6ImRmNGI2MzcyLWEwM2EtNDZmMC05YmY1LTdmOGQzNzhhMzMzNCIsImMiOjR9)
 
 **Estructura de los pipelines**
 
@@ -21,6 +21,51 @@ Tecnologías y detalles por componente
 - Arquitectura de pipelines modular y reusable mediante `Pipeline` y `node`.
 - Uso de `catalog.yml` para declarar datasets y orígenes (local, GCS).
 - Optimización de nodos: dividir lógica en nodes pequeños y deterministas, usar `parameters` para evitar hardcode, habilitar `kedro.io` caching cuando aplique.
+
+Comunicación entre pipelines (gráfico)
+
+Después de la sección de Kedro, es útil ver cómo se comunican los pipelines entre sí y con los sistemas externos (catálogo, almacenamiento y orquestador). A continuación hay un diagrama Mermaid que representa el flujo general y las dependencias.
+
+```mermaid
+flowchart LR
+	subgraph Orquestador
+		Airflow[AIRFLOW DAGs]
+	end
+
+	subgraph Pipelines
+		DI[data_ingestion]
+		DP[data_processing]
+		FE[feature_engineering]
+		RP[reporting]
+	end
+
+	subgraph Storage
+		GCS[(GCS / Buckets .parquet)]
+		Catalog[(Kedro Catalog)]
+	end
+
+	Airflow --> DI
+	DI -->|raw.parquet| GCS
+	DI --> Catalog
+	DP -->|processed.parquet| GCS
+	DP --> Catalog
+	FE -->|features.parquet| GCS
+	FE --> Catalog
+	RP -->|reports/metrics| GCS
+	RP --> Catalog
+
+	DI --> DP
+	DP --> FE
+	FE --> RP
+	Catalog --> RP
+
+	click GCS "https://cloud.google.com/storage" "Google Cloud Storage"
+	click Catalog "conf/base/catalog.yml" "Ver catálogo"
+```
+
+Si prefieres una imagen estática, coloca el fichero `pipelines-communication.png` en `data/08_reporting/` y quedará referenciado desde aquí:
+
+![Comunicación entre pipelines](data/08_reporting/pipelines-communication.png)
 
 **PySpark**:
 - Lectura/escritura en formato Parquet para eficiencia y compatibilidad con particionado.
@@ -116,14 +161,6 @@ Notas sobre `hooks.py`
 
 - `src/lomar_stack/hooks.py` carga `GCP_KEY_PATH` y construye una ruta `json_key` que luego se establece en la configuración Spark como `spark.hadoop.google.cloud.auth.service.account.json.keyfile`.
 - Esto implica que Spark necesita acceso al fichero en la ruta pasada; en entornos distribuidos (Spark en cluster) asegúrese de que el fichero sea accesible desde los nodos ejecutores o utilice credenciales soportadas por la plataforma (ADC, secretos de cluster).
-
-Checklist rápida de seguridad
-
-- [ ] `lomar-bibucket-b85f25ba9058.json` está en `.gitignore`.
-- [ ] El fichero JSON se monta como volumen con permisos restringidos.
-- [ ] Uso de roles IAM con menor privilegio posible.
-- [ ] Rotación periódica de credenciales.
-- [ ] Evaluar migrar a Secret Manager o Workload Identity para despliegues en cloud.
 
 
 
